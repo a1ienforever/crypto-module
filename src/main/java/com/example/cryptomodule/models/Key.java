@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "keys")
+@Table(name = "encryption_keys")
 public class Key {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
