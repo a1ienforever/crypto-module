@@ -3,6 +3,8 @@ module com.example.cryptomodule {
     requires javafx.fxml;
 
     requires org.kordamp.bootstrapfx.core;
+    requires jakarta.persistence;
+    requires org.hibernate.orm.core;
 
     // Разрешаем javafx.graphics доступ к классу CryptoApp
     opens com.example.cryptomodule.app to javafx.graphics;
