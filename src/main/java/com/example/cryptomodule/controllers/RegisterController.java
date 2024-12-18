@@ -1,5 +1,7 @@
 package com.example.cryptomodule.controllers;
 
+import com.example.cryptomodule.dao.UserDAO;
+import com.example.cryptomodule.models.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -33,6 +35,9 @@ public class RegisterController {
         }
 
         // Здесь добавьте логику сохранения пользователя в БД
+        UserDAO userDAO = new UserDAO();
+        User user = new User(username, password);
+        userDAO.saveUser(user);
         showAlert(Alert.AlertType.INFORMATION, "Registration Successful", "User " + username + " registered successfully!");
     }
 

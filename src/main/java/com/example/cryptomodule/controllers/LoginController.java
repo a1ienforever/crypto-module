@@ -1,5 +1,7 @@
 package com.example.cryptomodule.controllers;
 
+import com.example.cryptomodule.dao.UserDAO;
+import com.example.cryptomodule.models.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -55,7 +57,9 @@ public class LoginController {
     }
 
     private boolean isValidCredentials(String username, String password) {
-        return "admin".equals(username) && "password".equals(password);
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUserByLoginAndPassword(username, password);
+        return user != null;
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
