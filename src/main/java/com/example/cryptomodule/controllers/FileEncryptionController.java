@@ -1,19 +1,21 @@
 package com.example.cryptomodule.controllers;
 
+import com.example.cryptomodule.cryptography.KeyGeneratorService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.nio.file.Files;
 import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
@@ -27,16 +29,20 @@ public class FileEncryptionController {
 
     private File selectedFile;
 
+    @FXML
+    private TextField keyField;
+
+    @FXML
+    private TextField ivField;
+
     // Метод для выбора файла
     @FXML
     private void handleChooseFile() {
-        // Открываем диалог выбора файла
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.pdf", "*.docx", "*.*"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*.*"));
         selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            // Отображаем путь к файлу в поле
             filePathField.setText(selectedFile.getAbsolutePath());
         }
     }
@@ -68,56 +74,131 @@ public class FileEncryptionController {
                     throw new Exception("Invalid encryption method");
             }
 
-            // Сохранение зашифрованного файла
             File encryptedFile = new File(selectedFile.getParent(), "encrypted_" + selectedEncryption + "_" + selectedFile.getName());
             Files.write(encryptedFile.toPath(), encryptedData);
 
             showAlert(Alert.AlertType.INFORMATION, "Encryption Success", "File encrypted successfully using " + selectedEncryption);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Error", "Encryption failed: " + e.getMessage());
         }
     }
 
-    // Методы шифрования (AES, RSA, DES) останутся такими же, как и в предыдущем коде
+    // Метод для расшифровки файла
+    @FXML
+    private void handleDecrypt() {
+        try {
+            if (selectedFile == null) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Please select a file.");
+                return;
+            }
 
+            String selectedEncryption = encryptionChoice.getValue();
+            byte[] fileBytes = Files.readAllBytes(selectedFile.toPath());
+
+            byte[] decryptedData;
+            switch (selectedEncryption) {
+                case "AES":
+                    decryptedData = decryptAES(fileBytes);
+                    break;
+                case "RSA":
+                    decryptedData = decryptRSA(fileBytes);
+                    break;
+                case "DES":
+                    decryptedData = decryptDES(fileBytes);
+                    break;
+                default:
+                    throw new Exception("Invalid decryption method");
+            }
+
+            File decryptedFile = new File(selectedFile.getParent(), "decrypted_" + selectedEncryption + "_" + selectedFile.getName());
+            Files.write(decryptedFile.toPath(), decryptedData);
+
+            showAlert(Alert.AlertType.INFORMATION, "Decryption Success", "File decrypted successfully using " + selectedEncryption);
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Decryption failed: " + e.getMessage());
+        }
+    }
+
+    // AES Encryption
     private byte[] encryptAES(byte[] data) throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(128);
         SecretKey secretKey = keyGenerator.generateKey();
 
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] iv = new byte[16];
+        new java.security.SecureRandom().nextBytes(iv);
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+
+        keyField.setText(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
+        ivField.setText(Base64.getEncoder().encodeToString(iv));
+
         return cipher.doFinal(data);
     }
 
+    // AES Decryption
+    private byte[] decryptAES(byte[] data) throws Exception {
+        byte[] keyBytes = Base64.getDecoder().decode(keyField.getText());
+        byte[] ivBytes = Base64.getDecoder().decode(ivField.getText());
+
+        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
+        IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+
+        return cipher.doFinal(data);
+    }
+
+    // RSA Encryption
     private byte[] encryptRSA(byte[] data) throws Exception {
-        // Используйте корректный Base64 строковый ключ
-        String base64PublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuoCPtl8/82hS7ylpSHVDHSsUtULpkrL5Bqc+q2H9NYOA5HH+xF1PYSCMrQ3oWhl1H4shyCnPf2idk3XEWrB1NLSxEal/8wkaxy6GN7IZEXpZCSv4/LvR+cvn9VDLdIyfybKY+67nZqE/1WQam/TiUfE85gcJgxxDlXaQkc2Qe6RHbrp7Wl90aU3gGP6zBZYMCUk3f9uMrmRLt5hmYI4vVmRWr7zugxVM0SP16Wnihhz+kt1Mo0/QapMLwVtd7hiBwK25XbcdDD7VfXrITg83h2RZmx8OcFbe4WEmaQfolGQupSpQOeRerBIEbWX5nzWv4Cbb8Xqz73CnU680wGTWqwIDAQAB"; // Ваш ключ в Base64
+        String base64PublicKey = KeyGeneratorService.generateKeyPair();
+        keyField.setText(base64PublicKey);
 
-        // Проверьте, что строка Base64 корректная, и удалите пробелы
-        base64PublicKey = base64PublicKey.replaceAll("[^A-Za-z0-9+/=]", "");
-
-        // Декодируем строку Base64 в байты
         byte[] decodedKey = Base64.getDecoder().decode(base64PublicKey);
+        PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new java.security.spec.X509EncodedKeySpec(decodedKey));
 
-        // Генерация публичного ключа из байтов
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(new java.security.spec.X509EncodedKeySpec(decodedKey));
-
-        // Инициализация шифра с использованием публичного ключа
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
-        // Шифрование данных
         return cipher.doFinal(data);
     }
 
+    // RSA Decryption
+    private byte[] decryptRSA(byte[] data) throws Exception {
+        byte[] privateKeyBytes = Base64.getDecoder().decode(keyField.getText());
+        PrivateKey privateKey = KeyFactory.getInstance("RSA").generatePrivate(new java.security.spec.PKCS8EncodedKeySpec(privateKeyBytes));
+
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+
+        return cipher.doFinal(data);
+    }
+
+    // DES Encryption
     private byte[] encryptDES(byte[] data) throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec("12345678".getBytes(), "DES");
+
         Cipher cipher = Cipher.getInstance("DES");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+        keyField.setText(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
+
+        return cipher.doFinal(data);
+    }
+
+    // DES Decryption
+    private byte[] decryptDES(byte[] data) throws Exception {
+        byte[] keyBytes = Base64.getDecoder().decode(keyField.getText());
+        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "DES");
+
+        Cipher cipher = Cipher.getInstance("DES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
         return cipher.doFinal(data);
     }
 

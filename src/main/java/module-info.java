@@ -22,4 +22,5 @@ module com.example.cryptomodule {
     // Экспортируем нужные пакеты
     exports com.example.cryptomodule.app;
     exports com.example.cryptomodule.controllers;
+
 }

@@ -75,10 +75,15 @@ public class LoginController {
     }
 
     private boolean isValidCredentials(String username, String password) {
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByLoginAndPassword(username);
-        return PasswordUtil.checkPassword(password, user.getPassword());
-
+        try {
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.getUserByLoginAndPassword(username);
+            return PasswordUtil.checkPassword(password, user.getPassword());
+        }
+        catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Invalid username or password.");
+            return false;
+        }
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
