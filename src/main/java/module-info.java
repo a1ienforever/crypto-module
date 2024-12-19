@@ -7,7 +7,8 @@ module com.example.cryptomodule {
     requires org.hibernate.orm.core;
 
     requires java.naming;
-    requires java.sql; // для работы с JDBC
+    requires java.sql;
+    requires jbcrypt; // для работы с JDBC
 
     // Разрешаем javafx.graphics доступ к классу CryptoApp
     opens com.example.cryptomodule.app to javafx.graphics;

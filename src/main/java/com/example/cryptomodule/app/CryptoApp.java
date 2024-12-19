@@ -13,6 +13,7 @@ public class CryptoApp extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(CryptoApp.class.getResource("/com/example/cryptomodule/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+
         stage.setTitle("CryptoModule");
         stage.setScene(scene);
         stage.show();
@@ -26,6 +27,6 @@ public class CryptoApp extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

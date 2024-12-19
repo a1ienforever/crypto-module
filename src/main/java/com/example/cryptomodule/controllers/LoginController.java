@@ -2,6 +2,7 @@ package com.example.cryptomodule.controllers;
 
 import com.example.cryptomodule.dao.UserDAO;
 import com.example.cryptomodule.models.User;
+import com.example.cryptomodule.utils.PasswordUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,17 +22,34 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
+
+
     @FXML
     private void handleLogin() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        // Логика проверки пользователя
+        boolean authenticated = isValidCredentials(usernameField.getText(), passwordField.getText());
+        if (authenticated) {
+            try {
+                // Загружаем форму шифрования
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/crypt-file-view.fxml"));
+                Parent root = fxmlLoader.load();
 
-        if (isValidCredentials(username, password)) {
-            showAlert(Alert.AlertType.INFORMATION, "Login Successful", "Welcome, " + username + "!");
+                // Получаем текущее окно
+                Stage stage = (Stage) usernameField.getScene().getWindow();
+
+                // Устанавливаем новую сцену
+                stage.setScene(new Scene(root));
+                stage.setTitle("File Encryption");
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to load encryption page.");
+            }
         } else {
             showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
         }
     }
+
+
 
     @FXML
     private void handleRegister() {
@@ -58,8 +76,9 @@ public class LoginController {
 
     private boolean isValidCredentials(String username, String password) {
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByLoginAndPassword(username, password);
-        return user != null;
+        User user = userDAO.getUserByLoginAndPassword(username);
+        return PasswordUtil.checkPassword(password, user.getPassword());
+
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

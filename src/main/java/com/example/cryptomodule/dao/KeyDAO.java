@@ -15,7 +15,7 @@ public class KeyDAO {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.save(key);
+            session.persist(key);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
@@ -38,7 +38,7 @@ public class KeyDAO {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.update(key);
+            session.merge(key);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
@@ -53,7 +53,7 @@ public class KeyDAO {
             transaction = session.beginTransaction();
             Key key = session.get(Key.class, id);
             if (key != null) {
-                session.delete(key);
+                session.remove(key);
                 transaction.commit();
             }
         } catch (Exception e) {
