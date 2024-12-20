@@ -3,9 +3,13 @@ package com.example.cryptomodule.controllers;
 import com.example.cryptomodule.cryptography.KeyGeneratorService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import javax.crypto.Cipher;
@@ -20,13 +24,17 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
-public class FileEncryptionController {
+public class FileEncryptionController extends BaseController {
 
+    @FXML
+    private Button goBackId;
+    @FXML
+    private ImageView arrowId;
     @FXML
     private ComboBox<String> encryptionChoice;
 
     @FXML
-    private TextField filePathField;
+    private Text filePathField;
 
     private File selectedFile;
 
@@ -35,6 +43,15 @@ public class FileEncryptionController {
 
     @FXML
     private TextField ivField;
+
+    @FXML
+    private void goBack() {
+        String filepath = "/com/example/cryptomodule/views/menu-view.fxml";
+        String title = "Login";
+        Stage stage = (Stage) goBackId.getScene().getWindow();
+
+        changeScene(filepath, stage, title);
+    }
 
     // Метод для выбора файла
     @FXML
@@ -118,6 +135,7 @@ public class FileEncryptionController {
             showAlert(Alert.AlertType.INFORMATION, "Decryption Success", "File decrypted successfully using " + selectedEncryption);
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Error", "Decryption failed: " + e.getMessage());
         }
     }

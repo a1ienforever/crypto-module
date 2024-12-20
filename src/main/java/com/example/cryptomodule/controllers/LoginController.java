@@ -31,17 +31,17 @@ public class LoginController {
         if (authenticated) {
             try {
                 // Загружаем форму шифрования
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/crypt-file-view.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/views/menu-view.fxml"));
                 Parent root = fxmlLoader.load();
 
                 // Получаем текущее окно
                 Stage stage = (Stage) usernameField.getScene().getWindow();
 
                 // Устанавливаем новую сцену
-                stage.setScene(new Scene(root));
+                stage.setScene(new Scene(root, 640, 400));
                 stage.setTitle("File Encryption");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
                 showAlert(Alert.AlertType.ERROR, "Error", "Failed to load encryption page.");
             }
         } else {
@@ -55,13 +55,13 @@ public class LoginController {
     private void handleRegister() {
         try {
             // Загружаем форму регистрации
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/register-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/views/register-view.fxml"));
             Parent root = fxmlLoader.load();
 
             // Создаем новое окно для регистрации
             Stage registerStage = new Stage();
             registerStage.setTitle("Register");
-            registerStage.setScene(new Scene(root, 400, 200));
+            registerStage.setScene(new Scene(root, 640, 400));
             registerStage.show();
 
             // Закрываем текущее окно авторизации (опционально)
@@ -69,7 +69,7 @@ public class LoginController {
             stage.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load registration form.");
         }
     }

@@ -11,8 +11,8 @@ import java.io.IOException;
 public class CryptoApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(CryptoApp.class.getResource("/com/example/cryptomodule/login-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 700, 500);
+        FXMLLoader fxmlLoader = new FXMLLoader(CryptoApp.class.getResource("/com/example/cryptomodule/views/login-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 640, 400);
 
         stage.setTitle("CryptoModule");
         stage.setScene(scene);

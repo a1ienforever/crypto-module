@@ -8,14 +8,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class RegisterController {
+public class RegisterController extends BaseController {
 
+    @FXML
+    private ImageView arrowId;
+    @FXML
+    private Button goBackId;
     @FXML
     private TextField newUsernameField;
 
@@ -24,6 +31,15 @@ public class RegisterController {
 
     @FXML
     private PasswordField confirmPasswordField;
+
+    @FXML
+    private void goBack() {
+        String filepath = "/com/example/cryptomodule/views/login-view.fxml";
+        String title = "Login";
+        Stage stage = (Stage) goBackId.getScene().getWindow();
+
+        changeScene(filepath, stage, title);
+    }
 
     @FXML
     private void handleRegisterSubmit() {
@@ -51,17 +67,17 @@ public class RegisterController {
 
         try {
             // Загружаем форму шифрования
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/crypt-file-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/views/menu-view.fxml"));
             Parent root = fxmlLoader.load();
 
             // Получаем текущее окно
             Stage stage = (Stage) newUsernameField.getScene().getWindow();
 
             // Устанавливаем новую сцену
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(root, 640, 400));
             stage.setTitle("File Encryption");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load encryption page.");
         }
     }
