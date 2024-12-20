@@ -4,9 +4,15 @@ import com.example.cryptomodule.dao.UserDAO;
 import com.example.cryptomodule.models.User;
 import com.example.cryptomodule.utils.PasswordUtil;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class RegisterController {
 
@@ -42,6 +48,22 @@ public class RegisterController {
         UserDAO userDAO = new UserDAO();
         User user = new User(username, hashedPassword);
         userDAO.saveUser(user);
+
+        try {
+            // Загружаем форму шифрования
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/cryptomodule/crypt-file-view.fxml"));
+            Parent root = fxmlLoader.load();
+
+            // Получаем текущее окно
+            Stage stage = (Stage) newUsernameField.getScene().getWindow();
+
+            // Устанавливаем новую сцену
+            stage.setScene(new Scene(root));
+            stage.setTitle("File Encryption");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load encryption page.");
+        }
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

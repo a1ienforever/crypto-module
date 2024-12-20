@@ -32,13 +32,13 @@
 
     <!-- Поле для ввода секретного ключа -->
     <Label text="Secret Key:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-font-size: 14px;"/>
-    <TextField fx:id="keyField" GridPane.columnIndex="1" GridPane.rowIndex="4" editable="false" prefWidth="200"/>
+    <TextField fx:id="keyField" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="200"/>
 
     <!-- Поле для ввода IV -->
     <Label text="Initialization Vector (IV):" GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-font-size: 14px;"/>
-    <TextField fx:id="ivField" GridPane.columnIndex="1" GridPane.rowIndex="5" editable="false" prefWidth="200"/>
+    <TextField fx:id="ivField" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="200"/>
 
     <!-- Кнопка для шифрования файла -->
     <Button text="Encrypt File" onAction="#handleEncrypt" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2" prefWidth="200" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-    <Button text="Decrypt File" onAction="#handleDecrypt" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.columnSpan="3" prefWidth="200" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    <Button text="Decrypt File" onAction="#handleDecrypt" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.columnSpan="3" prefWidth="220" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
 </GridPane>

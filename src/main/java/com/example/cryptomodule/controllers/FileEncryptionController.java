@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -156,10 +157,12 @@ public class FileEncryptionController {
 
     // RSA Encryption
     private byte[] encryptRSA(byte[] data) throws Exception {
-        String base64PublicKey = KeyGeneratorService.generateKeyPair();
-        keyField.setText(base64PublicKey);
+        Pair<String, String> keys = KeyGeneratorService.generateKeyPair();
+        String privateKey = keys.getKey();
+        String publicCodedKey = keys.getValue();
+        keyField.setText(privateKey);
 
-        byte[] decodedKey = Base64.getDecoder().decode(base64PublicKey);
+        byte[] decodedKey = Base64.getDecoder().decode(publicCodedKey);
         PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new java.security.spec.X509EncodedKeySpec(decodedKey));
 
         Cipher cipher = Cipher.getInstance("RSA");
