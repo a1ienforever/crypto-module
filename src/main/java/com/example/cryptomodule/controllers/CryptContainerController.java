@@ -1,19 +1,27 @@
 package com.example.cryptomodule.controllers;
 
 import com.example.cryptomodule.cryptography.CryptoContainer;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Files;
 
-public class CryptContainerController {
+public class CryptContainerController extends BaseController {
+
+    public ImageView arrowId;
+    public Button goBackId;
+    @FXML
+    private Text filePathField;
 
     @FXML
-    private TextField filePathField;
-
     private File selectedFile;
 
     // Метод для выбора файла
@@ -74,5 +82,14 @@ public class CryptContainerController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void goBack() {
+        String filepath = "/com/example/cryptomodule/views/menu-view.fxml";
+        String title = "Login";
+        Stage stage = (Stage) goBackId.getScene().getWindow();
+
+        changeScene(filepath, stage, title);
     }
 }
