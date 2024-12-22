@@ -6,9 +6,9 @@ module com.example.cryptomodule {
     requires jakarta.persistence;
     requires org.hibernate.orm.core;
 
-    requires java.naming;
-    requires java.sql;
-    requires jbcrypt; // для работы с JDBC
+    requires jbcrypt;
+    requires org.bouncycastle.provider;
+    requires java.desktop; // для работы с JDBC
 
     // Разрешаем javafx.graphics доступ к классу CryptoApp
     opens com.example.cryptomodule.app to javafx.graphics;
