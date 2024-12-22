@@ -1,11 +1,16 @@
 package com.example.cryptomodule.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class MenuController extends BaseController {
+    @FXML
+    public Button digitalId;
+    @FXML
+    public Button checkDigitalId;
     @FXML
     private Button encryptId;
     @FXML
@@ -59,8 +64,23 @@ public class MenuController extends BaseController {
     public void openContainer() {
         String filepath = "/com/example/cryptomodule/views/open-container-view.fxml";
         String title = "Container";
-        Stage stage = (Stage) create_containerId.getScene().getWindow();
+        Stage stage = (Stage) open_containerId.getScene().getWindow();
 
+        changeScene(filepath, stage, title);
+    }
+
+    public void createDigitalSign() {
+        String filepath = "/com/example/cryptomodule/views/create-signature-view.fxml";
+        String title = "Signature";
+        Stage stage = (Stage) digitalId.getScene().getWindow();
+
+        changeScene(filepath, stage, title);
+    }
+
+    public void checkDigitalSign(){
+        String filepath = "/com/example/cryptomodule/views/check-signature-view.fxml";
+        String title = "Check Signature";
+        Stage stage = (Stage) checkDigitalId.getScene().getWindow();
         changeScene(filepath, stage, title);
     }
 }

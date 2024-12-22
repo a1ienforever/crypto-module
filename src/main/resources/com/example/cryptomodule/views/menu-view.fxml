@@ -49,14 +49,16 @@
                   <Font size="26.0" />
                </font>
             </Text>
+            <Button fx:id="digitalId" layoutX="220.0" layoutY="91.0" mnemonicParsing="false" onAction="#createDigitalSign" prefHeight="30.0" prefWidth="200.0" text="Создать цифровую подпись" />
+            <Button fx:id="checkDigitalId" layoutX="220.0" layoutY="131.0" mnemonicParsing="false" onAction="#checkDigitalSign" prefHeight="30.0" prefWidth="200.0" text="Проверить цифровую подпись" />
             <Button fx:id="encryptId" layoutX="220.0" layoutY="171.0" mnemonicParsing="false" onAction="#encryptFile" prefHeight="30.0" prefWidth="200.0" text="Зашифровать файл " />
             <Button fx:id="decryptId" layoutX="220.0" layoutY="211.0" mnemonicParsing="false" onAction="#decryptFile" prefHeight="30.0" prefWidth="200.0" text="Расшифровать файл" />
-            <Button fx:id="goBackId" layoutX="14.0" layoutY="17.0" mnemonicParsing="false" onAction="#goBack" opacity="0.0" prefHeight="25.0" prefWidth="32.0" />
             <ImageView fx:id="arrowId" fitHeight="30.0" fitWidth="32.0" layoutX="14.0" layoutY="14.0" onDragDetected="#goBack">
                <image>
                   <Image url="@../icon/arrow.png" />
                </image>
             </ImageView>
+            <Button fx:id="goBackId" layoutX="14.0" layoutY="17.0" mnemonicParsing="false" onAction="#goBack" opacity="0.0" prefHeight="25.0" prefWidth="32.0" />
             <Button fx:id="open_containerId" layoutX="220.0" layoutY="291.0" mnemonicParsing="false" onAction="#openContainer" prefHeight="30.0" prefWidth="200.0" text="Открыть контейнер" />
             <Button fx:id="create_containerId" layoutX="220.0" layoutY="251.0" mnemonicParsing="false" onAction="#createContainer" prefHeight="30.0" prefWidth="200.0" text="Создать контейнер" />
       </children>

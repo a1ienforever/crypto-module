@@ -81,12 +81,4 @@ public class RegisterController extends BaseController {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load encryption page.");
         }
     }
-
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }
