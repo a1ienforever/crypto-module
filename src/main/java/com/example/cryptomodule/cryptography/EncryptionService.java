@@ -11,9 +11,21 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class EncryptionService {
+
+    public static void clearPrivateKey(byte[] keyBytes) {
+        try {
+
+            if (keyBytes != null) {
+                Arrays.fill(keyBytes, (byte) 0); // Затираем содержимое
+            }
+        } catch (Exception e) {
+            System.err.println("Ошибка при очистке приватного ключа: " + e.getMessage());
+        }
+    }
     // AES Encryption
     public byte[] encryptAES(byte[] data, TextField keyField, TextField ivField) throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -29,7 +41,8 @@ public class EncryptionService {
 
         keyField.setText(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
         ivField.setText(Base64.getEncoder().encodeToString(iv));
-
+        clearPrivateKey(secretKey.getEncoded());
+        secretKey.destroy();
         return cipher.doFinal(data);
     }
 
@@ -43,7 +56,8 @@ public class EncryptionService {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
-
+        clearPrivateKey(secretKey.getEncoded());
+        secretKey.destroy();
         return cipher.doFinal(data);
     }
 
@@ -53,13 +67,13 @@ public class EncryptionService {
         String privateKey = keys.getKey();
         String publicCodedKey = keys.getValue();
         keyField.setText(privateKey);
+        privateKey = null;
 
         byte[] decodedKey = Base64.getDecoder().decode(publicCodedKey);
         PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new java.security.spec.X509EncodedKeySpec(decodedKey));
 
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-
         return cipher.doFinal(data);
     }
 
@@ -70,7 +84,8 @@ public class EncryptionService {
 
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-
+        clearPrivateKey(privateKeyBytes);
+        privateKeyBytes = null;
         return cipher.doFinal(data);
     }
 
@@ -82,6 +97,7 @@ public class EncryptionService {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
         keyField.setText(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
+        clearPrivateKey(secretKey.getEncoded());
 
         return cipher.doFinal(data);
     }
@@ -93,7 +109,7 @@ public class EncryptionService {
 
         Cipher cipher = Cipher.getInstance("DES");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-
+        clearPrivateKey(secretKey.getEncoded());
         return cipher.doFinal(data);
     }
 }
