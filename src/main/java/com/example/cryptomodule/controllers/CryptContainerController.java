@@ -1,10 +1,10 @@
 package com.example.cryptomodule.controllers;
 
 import com.example.cryptomodule.cryptography.CryptoContainer;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -18,6 +18,7 @@ public class CryptContainerController extends BaseController {
 
     public ImageView arrowId;
     public Button goBackId;
+    public PasswordField passwordPhraseId;
     @FXML
     private Text filePathField;
 
@@ -32,7 +33,18 @@ public class CryptContainerController extends BaseController {
         selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            filePathField.setText(selectedFile.getAbsolutePath());
+            long fileSizeInBytes = selectedFile.length(); // Размер файла в байтах
+            long fileSize = 0;
+            String format = "";
+            if (fileSizeInBytes > 1024*1024) {
+                format = "MB";
+                fileSize = (fileSizeInBytes / (1024*1024));
+            } else if (fileSizeInBytes < 1024*1024) {
+                format = "KB";
+                fileSize = (fileSizeInBytes / 1024);
+            }
+            String msg = selectedFile.getAbsolutePath() + " Размер файла: " + fileSize + format;
+            filePathField.setText(msg);
         }
     }
 
@@ -47,8 +59,8 @@ public class CryptContainerController extends BaseController {
 
             byte[] fileBytes = Files.readAllBytes(selectedFile.toPath());
             String containerPath = selectedFile.getParent() + "/cryptoContainer.dat";
-
-            CryptoContainer.createContainer(containerPath, fileBytes);
+            String phrase = passwordPhraseId.getText();
+            CryptoContainer.createContainer(containerPath, fileBytes, phrase);
 
             showAlert(Alert.AlertType.INFORMATION, "Success", "Crypto container created at: " + containerPath);
         } catch (Exception e) {
@@ -65,8 +77,8 @@ public class CryptContainerController extends BaseController {
                 return;
             }
 
-            byte[] decryptedData = CryptoContainer.decryptContainer(selectedFile.getAbsolutePath());
-
+            String phrase = passwordPhraseId.getText();
+            byte[] decryptedData = CryptoContainer.decryptContainer(selectedFile.getAbsolutePath(), phrase);
             File decryptedFile = new File(selectedFile.getParent(), "decrypted_" + selectedFile.getName());
             Files.write(decryptedFile.toPath(), decryptedData);
 

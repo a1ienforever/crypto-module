@@ -58,7 +58,18 @@ public class DigitalSignatureController extends BaseController {
         selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            filePathField.setText(selectedFile.getAbsolutePath());
+            long fileSizeInBytes = selectedFile.length(); // Размер файла в байтах
+            long fileSize = 0;
+            String format = "";
+            if (fileSizeInBytes > 1024*1024) {
+                format = "MB";
+                fileSize = (fileSizeInBytes / (1024*1024));
+            } else if (fileSizeInBytes < 1024*1024) {
+                format = "KB";
+                fileSize = (fileSizeInBytes / 1024);
+            }
+            String msg = selectedFile.getAbsolutePath() + " Размер файла: " + fileSize + format;
+            filePathField.setText(msg);
         }
     }
 

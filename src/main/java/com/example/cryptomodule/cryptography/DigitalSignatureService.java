@@ -36,19 +36,6 @@ public class DigitalSignatureService {
         return signature.verify(signatureBytes);
     }
 
-//    // Чтение файла в массив байтов
-//    private byte[] readFile(File file) throws IOException {
-//        try (FileInputStream fis = new FileInputStream(file);
-//             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-//            byte[] buffer = new byte[1024];
-//            int bytesRead;
-//            while ((bytesRead = fis.read(buffer)) != -1) {
-//                bos.write(buffer, 0, bytesRead);
-//            }
-//            return bos.toByteArray();
-//        }
-//    }
-
     // Запись цифровой подписи в файл
     public void saveSignatureToFile(String signature, File signatureFile) throws IOException {
         try (FileWriter writer = new FileWriter(signatureFile)) {
